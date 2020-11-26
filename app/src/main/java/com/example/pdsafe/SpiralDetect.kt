@@ -48,10 +48,10 @@ class SpiralDetect : AppCompatActivity() {
         var bitmap = binding.canvas.getBitmap()
         classifier.classifyAsync(bitmap)
             .addOnSuccessListener { result ->
-                if (result.contains("0"))//PD
-                    binding.results.text = "Negative"
+                if(result.contains("0"))
+                    binding.results.text="Negative"
                 else
-                    binding.results.text = "Positive"
+                    binding.results.text="Positive"
                 binding.results.visibility = View.VISIBLE
                 Log.e("Draw", result)
             }

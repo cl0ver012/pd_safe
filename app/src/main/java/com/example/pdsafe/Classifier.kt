@@ -9,6 +9,7 @@ import com.google.android.gms.tasks.TaskCompletionSource
 import org.tensorflow.lite.Interpreter
 import org.tensorflow.lite.gpu.CompatibilityList
 import org.tensorflow.lite.gpu.GpuDelegate
+import org.tensorflow.lite.nnapi.NnApiDelegate
 import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStreamReader
@@ -75,18 +76,15 @@ class Classifier(private val context: Context, var modelPath: String, var labelP
 
         val model = loadModel(assetManager, this.modelPath)
         labels = loadLabels(context, this.labelPath)
-        //get options for GPU
-        //does not work for some reason
-        val compat = CompatibilityList()
-        val options = Interpreter.Options().apply {
-            if (compat.isDelegateSupportedOnThisDevice) {
-                val delegateOptions = compat.bestOptionsForThisDevice
-                this.addDelegate(GpuDelegate(delegateOptions))
-            } else {
-                this.setNumThreads(4)
-            }
-        }
-        val interpreter = Interpreter(model)
+        //get Interpreter Options
+        val ops=Interpreter.Options()
+
+        //enable Android Neural Networks API
+        ops.setUseNNAPI(true)
+
+        //enable XNNPack Support(experimental)
+        ops.setUseXNNPACK(true)
+        val interpreter = Interpreter(model,ops)
         val inputShape = interpreter.getInputTensor(0).shape()
         inputImageWidth = inputShape[1]
         inputImageHeight = inputShape[2]

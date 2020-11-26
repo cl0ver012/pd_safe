@@ -39,16 +39,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Results"
+            android:textSize="18sp"
             app:layout_constraintBottom_toTopOf="@id/classify_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_frame"
-            android:textSize="18sp"/>
+            app:layout_constraintTop_toBottomOf="@id/layout_frame" />
 
         <Button
             android:id="@+id/classify_button"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:text="Classify"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

@@ -38,6 +38,7 @@ android {
         noCompress "tflite"
         noCompress "lite"
     }
+    ndkVersion '21.3.6528147'
 }
 
 dependencies {
