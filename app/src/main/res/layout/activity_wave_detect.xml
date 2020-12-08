@@ -22,7 +22,8 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/wave_normal_4" />
+                android:src="@drawable/wave_normal_4"
+                android:id="@+id/wave_image"/>
 
             <com.divyanshu.draw.widget.DrawView
                 android:id="@+id/canvas_wave"
@@ -49,5 +50,14 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/frame_wave" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/wave_switch_dynamic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dynamic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/wave_results" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
