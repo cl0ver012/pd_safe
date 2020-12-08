@@ -7,9 +7,6 @@ import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
 import org.tensorflow.lite.Interpreter
-import org.tensorflow.lite.gpu.CompatibilityList
-import org.tensorflow.lite.gpu.GpuDelegate
-import org.tensorflow.lite.nnapi.NnApiDelegate
 import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStreamReader
@@ -28,7 +25,6 @@ class Classifier(private val context: Context, var modelPath: String, var labelP
     private val executorService = Executors.newCachedThreadPool()
 
     var labels = ArrayList<String>()
-    private var gpuDelegate: GpuDelegate? = null
 
 
     private var inputImageWidth = 0
@@ -60,7 +56,7 @@ class Classifier(private val context: Context, var modelPath: String, var labelP
 
     @Throws(IOException::class)
     fun loadLabels(context: Context, filename: String): ArrayList<String> {
-        val s: Scanner = Scanner(InputStreamReader(context.assets.open(filename)))
+        val s = Scanner(InputStreamReader(context.assets.open(filename)))
 
         val labels = ArrayList<String>()
         while (s.hasNextLine()) {
@@ -77,14 +73,14 @@ class Classifier(private val context: Context, var modelPath: String, var labelP
         val model = loadModel(assetManager, this.modelPath)
         labels = loadLabels(context, this.labelPath)
         //get Interpreter Options
-        val ops=Interpreter.Options()
+        val ops = Interpreter.Options()
 
         //enable Android Neural Networks API
         ops.setUseNNAPI(true)
 
         //enable XNNPack Support(experimental)
         ops.setUseXNNPACK(true)
-        val interpreter = Interpreter(model,ops)
+        val interpreter = Interpreter(model, ops)
         val inputShape = interpreter.getInputTensor(0).shape()
         inputImageWidth = inputShape[1]
         inputImageHeight = inputShape[2]
@@ -100,16 +96,14 @@ class Classifier(private val context: Context, var modelPath: String, var labelP
         }
         val image = Bitmap.createScaledBitmap(bitmap, inputImageWidth, inputImageHeight, true)
         val byteBuffer = convertToByteBuffer(image)
-        //var out = ByteArrayOutputStream()
-        //bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
-        var output = Array(1) { FloatArray(NUM_RESULTS) }
+        val output = Array(1) { FloatArray(NUM_RESULTS) }
         interpreter?.run(byteBuffer, output)
         val result = output[0]
         val maxIndex = result.indices.maxByOrNull {
             result[it]
         } ?: -1
 
-        return labels[maxIndex]
+        return labels[maxIndex] + "Confidence=" + result[maxIndex]
     }
 
     fun classifyAsync(bitmap: Bitmap): Task<String> {
@@ -131,9 +125,9 @@ class Classifier(private val context: Context, var modelPath: String, var labelP
 
         for (pixelVal in pixels) {
 
-            var r = ((pixelVal shr 16 and 0xFF) - IMAGE_MEAN) / IMAGE_STD
-            var g = ((pixelVal shr 8 and 0xFF) - IMAGE_MEAN) / IMAGE_STD
-            var b = ((pixelVal and 0xFF) - IMAGE_MEAN) / IMAGE_STD
+            val r = ((pixelVal shr 16 and 0xFF) - IMAGE_MEAN) / IMAGE_STD
+            val g = ((pixelVal shr 8 and 0xFF) - IMAGE_MEAN) / IMAGE_STD
+            val b = ((pixelVal and 0xFF) - IMAGE_MEAN) / IMAGE_STD
 
             byteBuffer.putFloat(r + g + b)
             //byteBuffer.putFloat(g)

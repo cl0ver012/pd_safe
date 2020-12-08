@@ -64,6 +64,8 @@ class WaveDetect : AppCompatActivity() {
                     binding.waveResults.text = "Negative"
                 else
                     binding.waveResults.text = "Positive"
+                Toast.makeText(this, result.substring(result.indexOf('C')), Toast.LENGTH_SHORT)
+                    .show()
             }
             .addOnFailureListener {
                 Log.e("WaveDetect", "Fail", it)

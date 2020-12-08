@@ -2,7 +2,6 @@ package com.example.pdsafe
 
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
@@ -62,15 +61,16 @@ class SpiralDetect : AppCompatActivity() {
     }
 
     fun classify() {
-        var bitmap = binding.canvas.getBitmap()
+        val bitmap = binding.canvas.getBitmap()
         classifier.classifyAsync(bitmap)
             .addOnSuccessListener { result ->
                 if (result.contains("0"))
                     binding.results.text = "Negative"
                 else
                     binding.results.text = "Positive"
-                binding.results.visibility = View.VISIBLE
                 Log.e("Draw", result)
+                Toast.makeText(this, result.substring(result.indexOf('C')), Toast.LENGTH_SHORT)
+                    .show()
             }
             .addOnFailureListener {
                 Log.e("MainActivity", "Fail", it)
